@@ -75,6 +75,12 @@ public class tes {
         System.out.println("Resampled data on an hourly basis IP2 : " + resampledDataIP2);
         System.out.println("Resampled data on an hourly basis IP3 : " + resampledDataIP3);
 
+
+        //TO-DO
+        // Need to Merge all the resampled data in to one data set
+        //Get the Total OP and IP for each sampled hours and add another 2 datasets
+        //save all into the mysql
+
     }
     public static Map<LocalDateTime, Double> resampleHourly(List<DataPoint> data) {
         Map<LocalDateTime, Double> resampledData = new HashMap<>();
