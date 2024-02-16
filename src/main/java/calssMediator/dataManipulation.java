@@ -143,14 +143,15 @@ public class dataManipulation extends AbstractMediator {
         Map<LocalDateTime, Double> resampledData = new HashMap<>();
 
         // Group data points by the hour component of their timestamps
-        Map<Integer, List<DataPoint>> hourlyData = new HashMap<>();
+        Map<LocalDateTime, List<DataPoint>> hourlyData = new HashMap<>();
         for (DataPoint dp : data) {
-            int hour = dp.timestamp.getHour();
+            //int hour = dp.timestamp.getHour();
+            LocalDateTime hour = dp.timestamp.withMinute(0).withSecond(0);
             hourlyData.computeIfAbsent(hour, k -> new ArrayList<>()).add(dp);
         }
 
         // Aggregate data points within each hour
-        for (int hour : hourlyData.keySet()) {
+        for (LocalDateTime hour : hourlyData.keySet()) {
             List<DataPoint> hourData = hourlyData.get(hour);
             double sum = 0;
             for (DataPoint dp : hourData) {
