@@ -4,6 +4,7 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 
+import javax.net.ssl.SSLException;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
@@ -107,8 +108,8 @@ public class tes {
 
             tempAttributeValueList.add(OPT == 0.00 ? null : OPT);
             tempAttributeValueList.add( IPT == 0.00 ? null : IPT);
-            System.out.println("OPT: "+OPT);
-            System.out.println("OPT: "+IPT);
+            //System.out.println("OPT: "+OPT);
+            //System.out.println("OPT: "+IPT);
 
             //Insert the values to Database
             insertIntoMysql(element,tempAttributeValueList);
@@ -144,7 +145,7 @@ public class tes {
 
     public static void insertIntoMysql(LocalDateTime timestamp, List<Double> attributesValues) {
         // JDBC URL, username, and password of MySQL server
-        String url = "jdbc:mysql://localhost:3306/mysqltest";
+        String url = "jdbc:mysql://localhost:3306/mysqltest?useSSL=false";
         String user = "root";
         String password = "root";
 
@@ -152,8 +153,11 @@ public class tes {
         String InsertQuery = "INSERT INTO vrm_hourly (timestamp, op1, op2, op3, ip1, ip2, ip3, opT, ipT) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 
-        try (Connection conn = DriverManager.getConnection(url, user, password);
-             PreparedStatement preparedStatement = conn.prepareStatement(InsertQuery)) {
+        try {
+
+            Connection conn = DriverManager.getConnection(url, user, password);
+            PreparedStatement preparedStatement = conn.prepareStatement(InsertQuery);
+            conn.setAutoCommit(false);
 
             // Set parameters
             preparedStatement.setString(1, String.valueOf(timestamp));
@@ -169,6 +173,7 @@ public class tes {
             // Execute the query
             preparedStatement.executeUpdate();
             System.out.println("Data inserted successfully.");
+            conn.commit();
 
         } catch (SQLException ex) {
             ex.printStackTrace();
